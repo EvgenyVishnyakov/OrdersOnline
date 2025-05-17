@@ -28,7 +28,7 @@ namespace OnlineOrderWebApp.Modes
             return new Order
             {
                 OrderId = Guid.NewGuid(),
-                created = created,
+                Created = created,
                 Status = Status.New,
                 OrderProducts = orderProducts
             };
@@ -56,7 +56,7 @@ namespace OnlineOrderWebApp.Modes
             {
                 Id = newOrder.OrderId,
                 Status = newOrder.Status.ToString(),
-                Created = newOrder.created,
+                Created = newOrder.Created,
                 Lines = newOrder.OrderProducts.Select(op => new OrderLineDto
                 {
                     Id = op.ProductId,
