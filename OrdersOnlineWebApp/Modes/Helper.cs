@@ -27,8 +27,8 @@ namespace OnlineOrderWebApp.Modes
         {
             return new Order
             {
-                OrderId = Guid.NewGuid(),
-                Created = created,
+                Id = Guid.NewGuid(),
+                CreatedOrder = created,
                 Status = Status.New,
                 OrderProducts = orderProducts
             };
@@ -38,9 +38,9 @@ namespace OnlineOrderWebApp.Modes
         {
             return products.Select(p => new OrderProduct
             {
-                ProductId = p.ProductId,
+                ProductId = p.Id,
 
-                ProductCount = data[p.ProductId]
+                ProductCount = data[p.Id]
             }).ToList();
         }
 
@@ -54,9 +54,9 @@ namespace OnlineOrderWebApp.Modes
         {
             return new OrderResponseDto
             {
-                Id = newOrder.OrderId,
+                Id = newOrder.Id,
                 Status = newOrder.Status.ToString(),
-                Created = newOrder.Created,
+                Created = newOrder.CreatedOrder,
                 Lines = newOrder.OrderProducts.Select(op => new OrderLineDto
                 {
                     Id = op.ProductId,

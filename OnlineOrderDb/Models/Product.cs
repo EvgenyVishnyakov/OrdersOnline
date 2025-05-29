@@ -4,7 +4,7 @@ namespace OnlineOrder.Db.Models
 {
     public class Product
     {
-        public Guid ProductId { get; set; }
+        public Guid Id { get; set; }
 
         private int qty;
         [NotMapped]

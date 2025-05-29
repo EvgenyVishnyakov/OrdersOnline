@@ -6,7 +6,7 @@
 
         public ProductBuilder WithId(Guid id)
         {
-            _product.ProductId = id;
+            _product.Id = id;
             return this;
         }
 

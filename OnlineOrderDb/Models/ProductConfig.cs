@@ -12,7 +12,7 @@ namespace OnlineOrder.Db.Models
             var thirdProduct = new Guid("734b060e-7385-4c35-bfad-2187c5d8fd6c");
             var fourthProduct = new Guid("5a6429bd-cc54-4252-a6ea-e370fcdada15");
 
-            entityTypeBuilder.HasKey(e => e.ProductId);
+            entityTypeBuilder.HasKey(e => e.Id);
 
             entityTypeBuilder.HasData(
                     new ProductBuilder()

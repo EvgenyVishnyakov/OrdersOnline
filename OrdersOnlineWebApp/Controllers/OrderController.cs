@@ -4,6 +4,8 @@ using OnlineOrderWebApp.Service;
 
 namespace OnlineOrderWebApp.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class OrderController : ControllerBase
     {
         private readonly OrderService _orderService;

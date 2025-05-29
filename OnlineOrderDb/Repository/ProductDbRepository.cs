@@ -24,13 +24,13 @@ namespace OnlineOrder.Db.Repository
             return await _databaseContext.Products
                 .AsNoTracking()
                 .Include(x => x.QTY)
-                .FirstOrDefaultAsync(x => x.ProductId == productId);
+                .FirstOrDefaultAsync(x => x.Id == productId);
         }
 
         public async Task<List<Product>> GetAllAsync(List<Guid> productIds)
         {
             return await _databaseContext.Products
-                 .Where(p => productIds.Contains(p.ProductId))
+                 .Where(p => productIds.Contains(p.Id))
                 .ToListAsync();
         }
     }

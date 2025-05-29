@@ -110,7 +110,7 @@ namespace OnlineOrderWebApp.Service
                 var newOrder = Helper.GetNewOrder(created, orderProducts);
 
                 await _dbRepository.AddAsync(newOrder);
-                Log.Information($"Создан новый заказ под номером {newOrder.OrderId}");
+                Log.Information($"Создан новый заказ под номером {newOrder.Id}");
 
                 return Helper.GetOrderResponse(newOrder);
             }
@@ -126,9 +126,9 @@ namespace OnlineOrderWebApp.Service
             var products = await _productDbRepository.GetAllAsync(productIds);
             order.OrderProducts = products.Select(p => new OrderProduct
             {
-                ProductId = p.ProductId,
-                OrderId = order.OrderId,
-                ProductCount = productQuantities[p.ProductId]
+                ProductId = p.Id,
+                OrderId = order.Id,
+                ProductCount = productQuantities[p.Id]
             }).ToList();
         }
     }
