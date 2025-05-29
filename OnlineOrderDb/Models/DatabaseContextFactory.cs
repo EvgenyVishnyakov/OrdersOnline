@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.Extensions.Configuration;
 
 namespace OnlineOrder.Db.Models
 {
@@ -8,12 +7,7 @@ namespace OnlineOrder.Db.Models
     {
         public DatabaseContext CreateDbContext(string[] args)
         {
-            var configuration = new ConfigurationBuilder()
-           .SetBasePath(Directory.GetCurrentDirectory())
-           .AddJsonFile("appsettings.json")
-           .Build();
-
-            var connectionString = configuration.GetConnectionString("online_order_Vishnyakov");
+            var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
 
             var optionsBuilder = new DbContextOptionsBuilder<DatabaseContext>();
             optionsBuilder.UseNpgsql(connectionString);

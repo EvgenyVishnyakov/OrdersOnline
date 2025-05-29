@@ -8,20 +8,7 @@ namespace OnlineOrder.Db.Models
 
         private int qty;
         [NotMapped]
-        public int QTY
-        {
-            get
-            {
-                return qty;
-            }
-            set
-            {
-                if (value <= 0)
-                    throw new Exception("Количество товара должно быть больше нуля");
-                else
-                    qty = value;
-            }
-        }
+        public int QTY { get; set; }
 
         public List<OrderProduct>? OrderProducts { get; set; }
     }

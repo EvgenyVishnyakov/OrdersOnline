@@ -14,23 +14,23 @@ namespace OnlineOrder.Db.Models
 
             entityTypeBuilder.HasKey(e => e.Id);
 
-            entityTypeBuilder.HasData(
-                    new ProductBuilder()
-                .WithId(firstProduct)
-                .Build(),
+            //entityTypeBuilder.HasData(
+            //        new ProductBuilder()
+            //    .WithId(firstProduct)
+            //    .Build(),
 
-                    new ProductBuilder()
-                .WithId(secondProduct)
-                .Build(),
+            //        new ProductBuilder()
+            //    .WithId(secondProduct)
+            //    .Build(),
 
-                    new ProductBuilder()
-                .WithId(thirdProduct)
-                .Build(),
+            //        new ProductBuilder()
+            //    .WithId(thirdProduct)
+            //    .Build(),
 
-                    new ProductBuilder()
-                .WithId(fourthProduct)
-                .Build()
-                );
+            //        new ProductBuilder()
+            //    .WithId(fourthProduct)
+            //    .Build()
+            //    );
         }
     }
 }

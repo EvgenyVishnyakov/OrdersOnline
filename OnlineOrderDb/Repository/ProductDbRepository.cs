@@ -30,8 +30,8 @@ namespace OnlineOrder.Db.Repository
         public async Task<List<Product>> GetAllAsync(List<Guid> productIds)
         {
             return await _databaseContext.Products
-                 .Where(p => productIds.Contains(p.Id))
-                .ToListAsync();
+            .Where(p => productIds.Contains(p.Id))
+            .ToListAsync();
         }
     }
 }

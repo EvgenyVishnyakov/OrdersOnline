@@ -2,6 +2,7 @@
 using OnlineOrder.Db.Models;
 using OnlineOrderWebApp.DTO;
 using OnlineOrderWebApp.Modes;
+using OrdersOnlineWebApp.DTO;
 using Serilog;
 
 namespace OnlineOrderWebApp.Service
@@ -98,15 +99,15 @@ namespace OnlineOrderWebApp.Service
             }
         }
 
-        public async Task<OrderResponseDto?> CreateAsync(Dictionary<Guid, int> data)
+        public async Task<OrderResponseDto?> CreateAsync(List<ProductDto> productsDto)
         {
             try
             {
                 var created = Helper.GetDate();
-                var productIds = data.Keys.ToList();
-                var products = await _productDbRepository.GetAllAsync(productIds);
+                if (!await IsCheckProduct(productsDto))
+                    throw new Exception("Не все продукты есть в наличии");
 
-                var orderProducts = Helper.GetNewOrderProduct(data, products);
+                var orderProducts = Helper.GetNewOrderProduct(productsDto);
                 var newOrder = Helper.GetNewOrder(created, orderProducts);
 
                 await _dbRepository.AddAsync(newOrder);
@@ -119,6 +120,13 @@ namespace OnlineOrderWebApp.Service
                 Log.Error(ex, "Ошибка создания заказа!");
                 return null;
             }
+        }
+
+        private async Task<bool> IsCheckProduct(List<ProductDto> productsDto)
+        {
+            var productIds = productsDto.Select(p => p.Id).ToList();
+            var products = await _productDbRepository.GetAllAsync(productIds);
+            return productIds.Count == products.Count;
         }
 
         private async Task GetNewOrderProduct(Dictionary<Guid, int> productQuantities, Order? order, List<Guid> productIds)

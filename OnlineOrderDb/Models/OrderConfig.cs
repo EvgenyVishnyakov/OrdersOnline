@@ -9,7 +9,7 @@ namespace OnlineOrder.Db.Models
         {
             entityTypeBuilder.HasKey(e => e.Id);
 
-            entityTypeBuilder.Property(e => e.CreatedOrder)
+            entityTypeBuilder.Property(e => e.DataCreatedOrder)
                 .IsRequired();
 
             entityTypeBuilder.Property(e => e.Status)

@@ -1,5 +1,6 @@
 ﻿using OnlineOrder.Db.Models;
 using OnlineOrderWebApp.DTO;
+using OrdersOnlineWebApp.DTO;
 
 namespace OnlineOrderWebApp.Modes
 {
@@ -27,21 +28,27 @@ namespace OnlineOrderWebApp.Modes
         {
             return new Order
             {
-                Id = Guid.NewGuid(),
-                CreatedOrder = created,
+                //Id = Guid.NewGuid(),
+                DataCreatedOrder = created,
                 Status = Status.New,
                 OrderProducts = orderProducts
             };
         }
 
-        public static List<OrderProduct> GetNewOrderProduct(Dictionary<Guid, int> data, List<Product> products)
+        public static List<OrderProduct> GetNewOrderProduct(List<ProductDto> productDtos)
         {
-            return products.Select(p => new OrderProduct
-            {
-                ProductId = p.Id,
+            var orderProducts = new List<OrderProduct>();
 
-                ProductCount = data[p.Id]
-            }).ToList();
+            foreach (var productDto in productDtos)
+            {
+                orderProducts.Add(new OrderProduct
+                {
+                    ProductId = productDto.Id,
+                    ProductCount = productDto.Qty
+                });
+            }
+
+            return orderProducts;
         }
 
         public static string GetDate()
@@ -56,7 +63,7 @@ namespace OnlineOrderWebApp.Modes
             {
                 Id = newOrder.Id,
                 Status = newOrder.Status.ToString(),
-                Created = newOrder.CreatedOrder,
+                DataCreatedOrder = newOrder.DataCreatedOrder,
                 Lines = newOrder.OrderProducts.Select(op => new OrderLineDto
                 {
                     Id = op.ProductId,

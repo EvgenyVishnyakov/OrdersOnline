@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OnlineOrder.Db.Models;
 using OnlineOrderWebApp.Service;
+using OrdersOnlineWebApp.DTO;
 
 namespace OnlineOrderWebApp.Controllers
 {
@@ -16,9 +17,9 @@ namespace OnlineOrderWebApp.Controllers
         }
 
         [HttpPost("AddOrder")]
-        public async Task<IActionResult> AddAsync(Dictionary<Guid, int> data)
+        public async Task<IActionResult> AddAsync(List<ProductDto> productsDto)
         {
-            var order = await _orderService.CreateAsync(data);
+            var order = await _orderService.CreateAsync(productsDto);
             if (order == null)
                 return BadRequest("Ошибка при создании заказа");
 
