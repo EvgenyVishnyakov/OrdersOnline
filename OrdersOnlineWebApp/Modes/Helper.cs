@@ -28,7 +28,6 @@ namespace OnlineOrderWebApp.Modes
         {
             return new Order
             {
-                //Id = Guid.NewGuid(),
                 DataCreatedOrder = created,
                 Status = Status.New,
                 OrderProducts = orderProducts
@@ -49,12 +48,6 @@ namespace OnlineOrderWebApp.Modes
             }
 
             return orderProducts;
-        }
-
-        public static string GetDate()
-        {
-            var nowDay = DateTime.Now;
-            return nowDay.ToString("yyyy-MM-dd HH:mm:ss");
         }
 
         public static OrderResponseDto GetOrderResponse(Order newOrder)

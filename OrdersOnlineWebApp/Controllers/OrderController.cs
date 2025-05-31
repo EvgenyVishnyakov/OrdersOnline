@@ -46,9 +46,9 @@ namespace OnlineOrderWebApp.Controllers
         }
 
         [HttpPut("Put")]
-        public async Task<IActionResult> UpdateAsync(Guid id, Status status, [FromBody] Dictionary<Guid, int> data)
+        public async Task<IActionResult> UpdateAsync(Guid id, Status status, [FromBody] List<ProductDto> productsDto)
         {
-            var order = await _orderService.UpdateAsync(id, status, data);
+            var order = await _orderService.UpdateAsync(id, status, productsDto);
             if (order == null)
                 return BadRequest("Ошибка при получении заказа");
 

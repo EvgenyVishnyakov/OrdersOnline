@@ -63,7 +63,7 @@ namespace OnlineOrderWebApp.Service
             }
         }
 
-        public async Task<OrderResponseDto?> UpdateAsync(Guid id, Status status, Dictionary<Guid, int> productQuantities)
+        public async Task<OrderResponseDto?> UpdateAsync(Guid id, Status status, List<ProductDto> productsDto)
         {
             try
             {
@@ -75,17 +75,9 @@ namespace OnlineOrderWebApp.Service
 
                 if (Helper.IsLockedForChange(order))
                 {
-                    if (productQuantities == null || productQuantities.Count == 0)
-                    {
-                        Helper.GetStatus(status, order);
-                    }
-                    else
-                    {
-                        Helper.GetStatus(status, order);
-
-                        var productIds = productQuantities.Keys.ToList();
-                        await GetNewOrderProduct(productQuantities, order, productIds);
-                    }
+                    Helper.GetStatus(status, order);
+                    if (productsDto != null || productsDto.Count != 0)
+                        await GetNewOrderProduct(productsDto, order);
 
                     await _dbRepository.UpdateAsync(order);
                 }
@@ -103,12 +95,13 @@ namespace OnlineOrderWebApp.Service
         {
             try
             {
-                var created = Helper.GetDate();
-                if (!await IsCheckProduct(productsDto))
+                var datetimeCreatedOrder = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
+                if (!await IsProduct(productsDto))
                     throw new Exception("Не все продукты есть в наличии");
 
                 var orderProducts = Helper.GetNewOrderProduct(productsDto);
-                var newOrder = Helper.GetNewOrder(created, orderProducts);
+                var newOrder = Helper.GetNewOrder(datetimeCreatedOrder, orderProducts);
 
                 await _dbRepository.AddAsync(newOrder);
                 Log.Information($"Создан новый заказ под номером {newOrder.Id}");
@@ -122,22 +115,34 @@ namespace OnlineOrderWebApp.Service
             }
         }
 
-        private async Task<bool> IsCheckProduct(List<ProductDto> productsDto)
+        private async Task<bool> IsProduct(List<ProductDto> productsDto)
         {
             var productIds = productsDto.Select(p => p.Id).ToList();
             var products = await _productDbRepository.GetAllAsync(productIds);
             return productIds.Count == products.Count;
         }
 
-        private async Task GetNewOrderProduct(Dictionary<Guid, int> productQuantities, Order? order, List<Guid> productIds)
+        private async Task GetNewOrderProduct(List<ProductDto> productsDto, Order? order)
         {
-            var products = await _productDbRepository.GetAllAsync(productIds);
-            order.OrderProducts = products.Select(p => new OrderProduct
+            try
             {
-                ProductId = p.Id,
-                OrderId = order.Id,
-                ProductCount = productQuantities[p.Id]
-            }).ToList();
+                if (!await IsProduct(productsDto))
+                    throw new Exception("Не все продукты есть в наличии");
+
+                var productQuantities = productsDto.ToDictionary(p => p.Id, p => p.Qty);
+
+                order.OrderProducts = productsDto.Select(p => new OrderProduct
+                {
+                    ProductId = p.Id,
+                    OrderId = order.Id,
+                    ProductCount = productQuantities.TryGetValue(p.Id, out var quantity) ? quantity : 0
+                }).ToList();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, $"Ошибка обновления заказа {ex.Message}");
+                throw;
+            }
         }
     }
 }
