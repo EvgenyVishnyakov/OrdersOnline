@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\OnlineOrderDb\OnlineOrderDb.csproj" />
+    <ProjectReference Include="..\Services\BuisinessLogic.csproj" />
   </ItemGroup>
 
 </Project>

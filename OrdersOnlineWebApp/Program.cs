@@ -1,11 +1,14 @@
 using System.Text.Json.Serialization;
+using BuisinessLogic.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Converters;
 using OnlineOrder.Db;
 using OnlineOrder.Db.Interface;
 using OnlineOrder.Db.Repository;
-using OnlineOrderWebApp.Service;
+using OnlineOrderDb.Interface;
+using OnlineOrderDb.Service;
+using OnlineOrderDb.Services;
 using Serilog;
 
 try
@@ -37,10 +40,13 @@ try
     builder.Services.AddOpenApi();
 
     builder.Services.AddScoped<OrderService>();
-    builder.Services.AddScoped<ProductService>();
+    builder.Services.AddScoped<ProductServiceDb>();
+    builder.Services.AddScoped<OrderServiceDb>();
 
     builder.Services.AddTransient<IOrderDbRepository, OrderDbRepository>();
     builder.Services.AddTransient<IProductRepository, ProductDbRepository>();
+    builder.Services.AddTransient<IOrderServiceDb, OrderServiceDb>();
+    builder.Services.AddTransient<IProductServiceDb, ProductServiceDb>();
 
     builder.Host.UseSerilog((context, loggerConfiguration) =>
     {

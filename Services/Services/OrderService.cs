@@ -1,28 +1,26 @@
-﻿using OnlineOrder.Db.Interface;
-using OnlineOrder.Db.Models;
+﻿using OnlineOrder.Db.Models;
+using OnlineOrderDb.Interface;
 using OnlineOrderWebApp.DTO;
 using OnlineOrderWebApp.Modes;
 using OrdersOnlineWebApp.DTO;
 using Serilog;
 
-namespace OnlineOrderWebApp.Service
+namespace BuisinessLogic.Services
 {
     public class OrderService
     {
-        private readonly IOrderDbRepository _dbRepository;
-        private readonly IProductRepository _productDbRepository;
-
-        public OrderService(IOrderDbRepository dbRepository, IProductRepository productDbRepository)
+        private readonly IOrderServiceDb _orderServiceDb;
+        private readonly IProductServiceDb _productServiceDb;
+        public OrderService(IOrderServiceDb orderServiceDb, IProductServiceDb productServiceDb)
         {
-            _dbRepository = dbRepository;
-            _productDbRepository = productDbRepository;
+            _orderServiceDb = orderServiceDb;
+            _productServiceDb = productServiceDb;
         }
-
         public async Task<OrderResponseDto?> GetOrderAsync(Guid orderId)
         {
             try
             {
-                var order = await _dbRepository.GetAsync(orderId);
+                var order = await _orderServiceDb.GetOrderAsync(orderId);
                 return Helper.GetOrderResponse(order);
             }
             catch (Exception ex)
@@ -36,12 +34,12 @@ namespace OnlineOrderWebApp.Service
         {
             try
             {
-                var order = await _dbRepository.GetAsync(orderId);
+                var order = await _orderServiceDb.GetOrderAsync(orderId);
                 if (order != null)
                 {
                     if (Helper.IsBlockedForRemove(order))
                     {
-                        await _dbRepository.DeleteAsync(order);
+                        await _orderServiceDb.DeleteOrderAsync(order);
                         Log.Information($"Заказ {orderId} удален");
                         return true;
                     }
@@ -65,7 +63,7 @@ namespace OnlineOrderWebApp.Service
         {
             try
             {
-                var order = await _dbRepository.GetAsync(id);
+                var order = await _orderServiceDb.GetOrderAsync(id);
 
                 if (order == null)
                     throw new Exception("Заказ не найден");
@@ -77,7 +75,7 @@ namespace OnlineOrderWebApp.Service
                     if (productsDto != null || productsDto.Count != 0)
                         await GetNewOrderProduct(productsDto, order);
 
-                    await _dbRepository.UpdateAsync(order);
+                    await _orderServiceDb.UpdateOrderAsync(order);
                 }
 
                 return Helper.GetOrderResponse(order);
@@ -100,7 +98,7 @@ namespace OnlineOrderWebApp.Service
 
                 var newOrder = Helper.GetNewOrder(datetimeCreatedOrder, productsDto);
 
-                await _dbRepository.AddAsync(newOrder);
+                await _orderServiceDb.AddOrderAsync(newOrder);
                 Log.Information($"Создан новый заказ под номером {newOrder.Id}");
 
                 return Helper.GetOrderResponse(newOrder);
@@ -115,7 +113,7 @@ namespace OnlineOrderWebApp.Service
         private async Task<bool> IsProduct(List<ProductDto> productsDto)
         {
             var productIds = productsDto.Select(p => p.Id).ToList();
-            var products = await _productDbRepository.GetAllAsync(productIds);
+            var products = await _productServiceDb.GetAllAsync(productIds);
             return productIds.Count == products.Count;
         }
 
