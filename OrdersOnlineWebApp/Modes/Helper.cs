@@ -24,13 +24,15 @@ namespace OnlineOrderWebApp.Modes
             return !lockedStatuses.Contains(order.Status);
         }
 
-        public static Order GetNewOrder(string created, List<OrderProduct> orderProducts)
+        public static Order GetNewOrder(string created, List<ProductDto> productDtos)
         {
+            var ordersProduct = GetNewOrderProduct(productDtos);
+
             return new Order
             {
                 DataCreatedOrder = created,
                 Status = Status.New,
-                OrderProducts = orderProducts
+                OrderProducts = ordersProduct
             };
         }
 

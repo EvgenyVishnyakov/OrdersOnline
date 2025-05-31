@@ -39,8 +39,6 @@ namespace OnlineOrderWebApp.Service
                 var order = await _dbRepository.GetAsync(orderId);
                 if (order != null)
                 {
-                    var blockedStatuses = new[] { Status.Delivared, Status.Delivering, Status.Done };
-
                     if (Helper.IsBlockedForRemove(order))
                     {
                         await _dbRepository.DeleteAsync(order);
@@ -100,8 +98,7 @@ namespace OnlineOrderWebApp.Service
                 if (!await IsProduct(productsDto))
                     throw new Exception("Не все продукты есть в наличии");
 
-                var orderProducts = Helper.GetNewOrderProduct(productsDto);
-                var newOrder = Helper.GetNewOrder(datetimeCreatedOrder, orderProducts);
+                var newOrder = Helper.GetNewOrder(datetimeCreatedOrder, productsDto);
 
                 await _dbRepository.AddAsync(newOrder);
                 Log.Information($"Создан новый заказ под номером {newOrder.Id}");
