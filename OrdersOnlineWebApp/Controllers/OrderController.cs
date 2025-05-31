@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BuisinessLogic.Services;
+using Microsoft.AspNetCore.Mvc;
 using OnlineOrder.Db.Models;
-using OnlineOrderWebApp.Service;
+using OrdersOnlineWebApp.DTO;
 
 namespace OnlineOrderWebApp.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class OrderController : ControllerBase
     {
         private readonly OrderService _orderService;
@@ -14,9 +17,9 @@ namespace OnlineOrderWebApp.Controllers
         }
 
         [HttpPost("AddOrder")]
-        public async Task<IActionResult> AddAsync(Dictionary<Guid, int> data)
+        public async Task<IActionResult> AddAsync(List<ProductDto> productsDto)
         {
-            var order = await _orderService.CreateAsync(data);
+            var order = await _orderService.CreateAsync(productsDto);
             if (order == null)
                 return BadRequest("Ошибка при создании заказа");
 
@@ -43,9 +46,9 @@ namespace OnlineOrderWebApp.Controllers
         }
 
         [HttpPut("Put")]
-        public async Task<IActionResult> UpdateAsync(Guid id, Status status, [FromBody] Dictionary<Guid, int> data)
+        public async Task<IActionResult> UpdateAsync(Guid id, Status status, [FromBody] List<ProductDto> productsDto)
         {
-            var order = await _orderService.UpdateAsync(id, status, data);
+            var order = await _orderService.UpdateAsync(id, status, productsDto);
             if (order == null)
                 return BadRequest("Ошибка при получении заказа");
 

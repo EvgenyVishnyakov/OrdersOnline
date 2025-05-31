@@ -1,5 +1,6 @@
 ﻿using OnlineOrder.Db.Models;
 using OnlineOrderWebApp.DTO;
+using OrdersOnlineWebApp.DTO;
 
 namespace OnlineOrderWebApp.Modes
 {
@@ -23,40 +24,41 @@ namespace OnlineOrderWebApp.Modes
             return !lockedStatuses.Contains(order.Status);
         }
 
-        public static Order GetNewOrder(string created, List<OrderProduct> orderProducts)
+        public static Order GetNewOrder(string created, List<ProductDto> productDtos)
         {
+            var ordersProduct = GetNewOrderProduct(productDtos);
+
             return new Order
             {
-                OrderId = Guid.NewGuid(),
-                Created = created,
+                DataCreatedOrder = created,
                 Status = Status.New,
-                OrderProducts = orderProducts
+                OrderProducts = ordersProduct
             };
         }
 
-        public static List<OrderProduct> GetNewOrderProduct(Dictionary<Guid, int> data, List<Product> products)
+        public static List<OrderProduct> GetNewOrderProduct(List<ProductDto> productDtos)
         {
-            return products.Select(p => new OrderProduct
+            var orderProducts = new List<OrderProduct>();
+
+            foreach (var productDto in productDtos)
             {
-                ProductId = p.ProductId,
+                orderProducts.Add(new OrderProduct
+                {
+                    ProductId = productDto.Id,
+                    ProductCount = productDto.Qty
+                });
+            }
 
-                ProductCount = data[p.ProductId]
-            }).ToList();
-        }
-
-        public static string GetDate()
-        {
-            var nowDay = DateTime.Now;
-            return nowDay.ToString("yyyy-MM-dd HH:mm:ss");
+            return orderProducts;
         }
 
         public static OrderResponseDto GetOrderResponse(Order newOrder)
         {
             return new OrderResponseDto
             {
-                Id = newOrder.OrderId,
+                Id = newOrder.Id,
                 Status = newOrder.Status.ToString(),
-                Created = newOrder.Created,
+                DataCreatedOrder = newOrder.DataCreatedOrder,
                 Lines = newOrder.OrderProducts.Select(op => new OrderLineDto
                 {
                     Id = op.ProductId,

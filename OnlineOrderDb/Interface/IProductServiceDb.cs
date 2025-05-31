@@ -1,8 +1,8 @@
 ﻿using OnlineOrder.Db.Models;
 
-namespace OnlineOrder.Db.Interface
+namespace OnlineOrderDb.Interface
 {
-    public interface IProductRepository
+    public interface IProductServiceDb
     {
         Task<List<Product>> GetAllAsync(List<Guid> productIds);
     }

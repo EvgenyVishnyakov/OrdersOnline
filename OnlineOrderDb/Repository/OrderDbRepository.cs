@@ -24,7 +24,7 @@ namespace OnlineOrder.Db.Repository
                 .AsNoTracking()
                 .Where(o => o.IsActiv == true)
                 .Include(op => op.OrderProducts)
-                .FirstOrDefaultAsync(o => o.OrderId == orderId);
+                .FirstOrDefaultAsync(o => o.Id == orderId);
         }
 
         public async Task<List<Order>> GetAllAsync()
@@ -52,7 +52,7 @@ namespace OnlineOrder.Db.Repository
 
         public async Task DeleteAsync(Order deleteOrder)
         {
-            var order = await GetAsync(deleteOrder.OrderId);
+            var order = await GetAsync(deleteOrder.Id);
             order.IsActiv = false;
             _databaseContext.Orders.Update(order);
             await _databaseContext.SaveChangesAsync();

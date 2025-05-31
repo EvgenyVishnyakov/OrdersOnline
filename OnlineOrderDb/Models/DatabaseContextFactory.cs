@@ -7,7 +7,7 @@ namespace OnlineOrder.Db.Models
     {
         public DatabaseContext CreateDbContext(string[] args)
         {
-            var connectionString = "Host=localhost;Port=5432;Database=online_order_Programmer;UserName=Programmer;Password=postgres;";
+            var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
 
             var optionsBuilder = new DbContextOptionsBuilder<DatabaseContext>();
             optionsBuilder.UseNpgsql(connectionString);
